@@ -19,16 +19,15 @@ describe('New interface', () => {
             cy.intercept({ method: 'GET', url: '/checkAuth', }).as('checkAuth')
             cy.doPayment(DEFAULT_USERNAME, DEFAULT_PASSWORD, paymentValue, randomString)
             cy.get('[data-test="sidenav-user-balance"]').invoke('text').as('balanceBeforePay')
-            cy.get('@balanceBeforePay')
-                .then((balanceBeforePay) => {
-                    cy.log(balanceBeforePay)
-                    balanceBefore = parseFloat(balanceBeforePay.substr(1))
-                    return balanceBefore
+            cy.get('@balanceBeforePay').then((balanceBeforePay) => {
+                cy.log(balanceBeforePay)
+                balanceBefore = parseFloat(balanceBeforePay.substr(1))
 
-                })
-                .then((bf) => {
 
-                    cy.wait('@checkAuth').then(() => {
+            })
+                .then(() => {
+
+                    return cy.wait('@checkAuth').then(() => {
                         cy.get('[data-test="sidenav-user-balance"]').invoke('text').as('balanceAfterPay')
                         cy.get('@balanceAfterPay').then((balanceAfterPay) => {
                             cy.log(balanceAfterPay)
