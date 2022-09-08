@@ -42,6 +42,7 @@ Cypress.Commands.add('doPayment', (userName, password, paymentAmount, paymentCom
     cy.get('.MuiButton-label').contains('Pay').click()
 })
 
+
 Cypress.Commands.add('doRequest', (userName, password, paymentAmount, paymentCommment) => {
 
 

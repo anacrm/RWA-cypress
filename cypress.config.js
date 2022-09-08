@@ -4,6 +4,7 @@ const dotenv = require ('dotenv')
 dotenv.config()
 
 module.exports = defineConfig({
+  projectId: 'mg9i4y',
   env: {
     DEFAULT_USERNAME: process.env.DEFAULT_USERNAME,
     DEFAULT_PASSWORD: process.env.DEFAULT_PASSWORD,

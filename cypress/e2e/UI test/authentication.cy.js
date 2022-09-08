@@ -20,7 +20,7 @@ describe('Authentication', () => {
       cy.get('.MuiTypography-root').contains('@').should('contain', DEFAULT_USERNAME)
     })
 
-    it.only('Does not login user with wrong password', () => {
+    it('Does not login user with wrong password', () => {
 
       cy.signIn(DEFAULT_USERNAME, '1234');
 
