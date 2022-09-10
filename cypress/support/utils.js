@@ -10,7 +10,13 @@ const paymentValue = () => {
     return "5";
 }
 
+const toNumber = (stringValue) => {
+    return parseFloat(stringValue.substr(1).replace(',', ''))
+
+}
+
 module.exports = {
+    toNumber,
     randomString,
     randomNumber,
     paymentValue

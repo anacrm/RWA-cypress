@@ -42,6 +42,24 @@ Cypress.Commands.add('doPayment', (userName, password, paymentAmount, paymentCom
     cy.get('.MuiButton-label').contains('Pay').click()
 })
 
+Cypress.Commands.add('doPaymentOnly', (paymentAmount, paymentCommment) => {
+
+    cy.get('a[href*="/transaction/new"]').click()
+    cy.get('li[data-test*="user-list-item"]').first().click()
+    cy.get('#amount').type(paymentAmount)
+    cy.get('#transaction-create-description-input').type(paymentCommment)
+    cy.get('.MuiButton-label').contains('Pay').click()
+})
+
+Cypress.Commands.add('doRequestOnly', (paymentAmount, paymentCommment) => {
+
+    cy.get('a[href*="/transaction/new"]').click()
+    cy.get('li[data-test*="user-list-item"]').first().click()
+    cy.get('#amount').type(paymentAmount)
+    cy.get('#transaction-create-description-input').type(paymentCommment)
+    cy.get('.MuiButton-label').contains('Request').click()
+})
+
 
 Cypress.Commands.add('doRequest', (userName, password, paymentAmount, paymentCommment) => {
 
@@ -51,7 +69,7 @@ Cypress.Commands.add('doRequest', (userName, password, paymentAmount, paymentCom
     cy.get('li[data-test*="user-list-item"]').first().click()
     cy.get('#amount').type(paymentAmount)
     cy.get('#transaction-create-description-input').type(paymentCommment)
-    cy.get('.MuiButton-label').contains('Request').click()
+
 })
 
 
