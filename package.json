@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/anacrm/RWA-cypress#readme",
   "devDependencies": {
-    "cypress": "^10.4.0"
+    "cypress": "^10.8.0"
   },
   "dependencies": {
     "chai": "^4.3.6",
