@@ -4,12 +4,10 @@ const utils = require('../../support/utils')
 describe('Transaction Detail', () => {
     const DEFAULT_PASSWORD = Cypress.env('DEFAULT_PASSWORD');
     const DEFAULT_USERNAME = Cypress.env('DEFAULT_USERNAME');
-    // FIXME:  these variables names are very confusing for me
-    // I can't tell what USER_NAME, ACCESSORY_USERNAME and USER_NAME_ACCESSORY are used for
+    const DEFAULT_FULLNAME = Cypress.env('DEFAULT_FULLNAME')
     const ACCESSORY_PASSWORD = Cypress.env('ACCESSORY_PASSWORD');
     const ACCESSORY_USERNAME = Cypress.env('ACCESSORY_USERNAME');
-    const USER_NAME = Cypress.env('USER_NAME')
-    const USER_NAME_ACCESSORY = Cypress.env('USER_NAME_ACCESSORY')
+    const ACCESSORY_FULLNAME = Cypress.env('ACCESSORY_FULLNAME')
     let paymentValue = utils.paymentValue()
     let randomString = utils.randomString();
 
@@ -31,7 +29,7 @@ describe('Transaction Detail', () => {
                 })
 
             cy.intercept({ method: 'POST', url: '/likes/**', }).as('postLike')
-            cy.doPayment(DEFAULT_USERNAME, DEFAULT_PASSWORD, paymentValue, randomString, USER_NAME)
+            cy.doPayment(DEFAULT_USERNAME, DEFAULT_PASSWORD, paymentValue, randomString, DEFAULT_FULLNAME)
             cy.get('.MuiTypography-root').contains('Home').click()
             cy.get('.MuiTab-wrapper').contains('Mine').click()
             cy.get('.MuiListItem-root.MuiListItem-alignItemsFlexStart').first().click()
@@ -74,7 +72,7 @@ describe('Transaction Detail', () => {
                 })
 
             cy.signIn(DEFAULT_USERNAME, DEFAULT_PASSWORD)
-            cy.doPaymentOnly(paymentValue, randomString, USER_NAME)
+            cy.doPaymentOnly(paymentValue, randomString, DEFAULT_FULLNAME)
             cy.get('.MuiTypography-root').contains('Home').click()
             cy.get('.MuiTab-wrapper').contains('Mine').click()
             cy.get('.MuiListItem-root.MuiListItem-alignItemsFlexStart').first().click()
@@ -96,7 +94,7 @@ describe('Transaction Detail', () => {
         it('Comment transaction and check comment section', () => {
 
             cy.signIn(DEFAULT_USERNAME, DEFAULT_PASSWORD)
-            cy.doPaymentOnly(paymentValue, randomString, USER_NAME)
+            cy.doPaymentOnly(paymentValue, randomString, DEFAULT_FULLNAME)
             cy.get('.MuiTypography-root').contains('Home').click()
             cy.get('.MuiTab-wrapper').contains('Mine').click()
             cy.get('.MuiListItem-root.MuiListItem-alignItemsFlexStart').first().click()
@@ -119,7 +117,7 @@ describe('Transaction Detail', () => {
 
             cy.intercept({ method: 'GET', url: '/transactions/**', }).as('getTransations')
             cy.signIn(ACCESSORY_USERNAME, ACCESSORY_PASSWORD)
-            cy.doRequestOnly(paymentValue, randomString, USER_NAME_ACCESSORY)
+            cy.doRequestOnly(paymentValue, randomString, ACCESSORY_FULLNAME)
             cy.get('.MuiTypography-root').contains('Logout').click()
 
             cy.signIn(DEFAULT_USERNAME, DEFAULT_PASSWORD)
@@ -150,7 +148,7 @@ describe('Transaction Detail', () => {
 
             cy.intercept({ method: 'GET', url: '/transactions/**', }).as('getTransations')
             cy.signIn(ACCESSORY_USERNAME, ACCESSORY_PASSWORD)
-            cy.doRequestOnly(paymentValue, randomString, USER_NAME_ACCESSORY)
+            cy.doRequestOnly(paymentValue, randomString, ACCESSORY_FULLNAME)
             cy.get('.MuiTypography-root').contains('Logout').click()
 
             cy.signIn(DEFAULT_USERNAME, DEFAULT_PASSWORD)

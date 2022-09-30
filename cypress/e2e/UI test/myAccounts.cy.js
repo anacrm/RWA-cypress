@@ -3,8 +3,8 @@ const utils = require('../../support/utils')
 
 describe('User settings', () => {
 
-    const DEFAULT_PASSWORD = Cypress.env('DEFAULT_PASSWORD');
-    const DEFAULT_USERNAME = Cypress.env('DEFAULT_USERNAME');
+    const EDIT_PASSWORD = Cypress.env('EDIT_PASSWORD');
+    const EDIT_USERNAME = Cypress.env('EDIT_USERNAME');
 
     describe('Update user settings', () => {
 
@@ -15,7 +15,7 @@ describe('User settings', () => {
 
         beforeEach(() => {
             cy.visit('/signin')
-            cy.signIn(DEFAULT_USERNAME, DEFAULT_PASSWORD);
+            cy.signIn(EDIT_USERNAME, EDIT_PASSWORD);
         })
 
         it('Successful update', () => {

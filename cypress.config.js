@@ -10,11 +10,12 @@ module.exports = defineConfig({
   env: {
     DEFAULT_USERNAME: process.env.DEFAULT_USERNAME,
     DEFAULT_PASSWORD: process.env.DEFAULT_PASSWORD,
+    DEFAULT_FULLNAME: process.env.DEFAULT_FULLNAME,
     ACCESSORY_USERNAME: process.env.ACCESSORY_USERNAME,
     ACCESSORY_PASSWORD: process.env.ACCESSORY_PASSWORD,
-    USER_NAME: process.env.USER_NAME,
-    USER_NAME_ACCESSORY: process.env.USER_NAME_ACCESSORY,
-
+    ACCESSORY_FULLNAME: process.env.ACCESSORY_FULLNAME,
+    EDIT_USERNAME: process.env.EDIT_USERNAME,
+    EDIT_PASSWORD: process.env.EDIT_PASSWORD,
     API_KEY: ''
   },
   e2e: {

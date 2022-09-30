@@ -7,7 +7,7 @@ describe('New interface', () => {
     const DEFAULT_USERNAME = Cypress.env('DEFAULT_USERNAME');
     const ACCESSORY_USERNAME = Cypress.env('ACCESSORY_USERNAME')
     const ACCESSORY_PASSWORD = Cypress.env('ACCESSORY_PASSWORD')
-    const USER_NAME = Cypress.env('USER_NAME')
+    const DEFAULT_FULLNAME = Cypress.env('DEFAULT_FULLNAME')
     let paymentValue = utils.paymentValue()
     let randomString = utils.randomString();
 
@@ -28,7 +28,7 @@ describe('New interface', () => {
                 .then((balanceBeforePay) => {
 
                     balanceBefore = utils.toNumber(balanceBeforePay)
-                    cy.doPaymentOnly(paymentValue, randomString, USER_NAME)
+                    cy.doPaymentOnly(paymentValue, randomString, DEFAULT_FULLNAME)
                     cy.wait('@checkAuth')
                     cy.get('[data-test="sidenav-user-balance"]').invoke('text').as('balanceAfterPay')
                     return cy.get('@balanceAfterPay')
@@ -65,7 +65,7 @@ describe('New interface', () => {
                 .then((balanceBeforePay) => {
 
                     balanceBefore = utils.toNumber(balanceBeforePay)
-                    cy.doPaymentOnly(paymentValue, randomString, USER_NAME)
+                    cy.doPaymentOnly(paymentValue, randomString, DEFAULT_FULLNAME)
                     cy.wait('@checkAuth')
                     cy.get('[data-test="sidenav-user-balance"]').invoke('text').as('balanceAfterPay') //FIXME: don't need alias. i think the retur can be the cy.get.invoke part already
                     return cy.get('@balanceAfterPay')
@@ -100,7 +100,7 @@ describe('New interface', () => {
                     cy.log(countBefore)
                     cy.get('.MuiTypography-root').contains('Logout').click()
                     cy.signIn(DEFAULT_USERNAME, DEFAULT_PASSWORD)
-                    cy.doPaymentOnly(paymentValue, randomString, USER_NAME)
+                    cy.doPaymentOnly(paymentValue, randomString, DEFAULT_FULLNAME)
                     cy.wait('@notifications')
                     cy.get('.MuiTypography-root').contains('Logout').click()
                     cy.signIn(ACCESSORY_USERNAME, ACCESSORY_PASSWORD)
@@ -142,7 +142,7 @@ describe('New interface', () => {
 
                     balanceBefore = utils.toNumber(balanceBeforePay)
                     cy.log(balanceBefore)
-                    cy.doRequestOnly(paymentValue, randomString, USER_NAME)
+                    cy.doRequestOnly(paymentValue, randomString, DEFAULT_FULLNAME)
                     cy.wait('@checkAuth')
                     cy.get('[data-test="sidenav-user-balance"]').invoke('text').as('balanceAfterPay') //can return the cy.get.invoke already, without the alias
                     return cy.get('@balanceAfterPay')
@@ -181,7 +181,7 @@ describe('New interface', () => {
                 .then((balanceBeforePay) => {
 
                     balanceBefore = utils.toNumber(balanceBeforePay)
-                    cy.doRequestOnly(paymentValue, randomString, USER_NAME)
+                    cy.doRequestOnly(paymentValue, randomString, DEFAULT_FULLNAME)
                     cy.wait('@checkAuth')
                     cy.get('[data-test="sidenav-user-balance"]').invoke('text').as('balanceAfterPay')
                     return cy.get('@balanceAfterPay')
@@ -213,7 +213,7 @@ describe('New interface', () => {
                     cy.log(countBefore)
                     cy.get('.MuiTypography-root').contains('Logout').click()
                     cy.signIn(DEFAULT_USERNAME, DEFAULT_PASSWORD)
-                    cy.doRequestOnly(paymentValue, randomString, USER_NAME)
+                    cy.doRequestOnly(paymentValue, randomString, DEFAULT_FULLNAME)
                     cy.wait('@notifications')
                     cy.get('.MuiTypography-root').contains('Logout').click()
                     cy.signIn(ACCESSORY_USERNAME, ACCESSORY_PASSWORD)
