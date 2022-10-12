@@ -1,7 +1,7 @@
 /// <reference types="cypress"/>
 const utils = require('../../support/utils')
 
-describe('Transaction Detail', () => {
+describe('Given Transaction Detail', () => {
     const DEFAULT_PASSWORD = Cypress.env('DEFAULT_PASSWORD');
     const DEFAULT_USERNAME = Cypress.env('DEFAULT_USERNAME');
     const DEFAULT_FULLNAME = Cypress.env('DEFAULT_FULLNAME')
@@ -11,10 +11,10 @@ describe('Transaction Detail', () => {
     let paymentValue = utils.paymentValue()
     let randomString = utils.randomString();
 
-    describe('Transaction Detail interface of payment', () => {
+    describe('When Transaction Detail interface of payment is accessed', () => {
 
 
-        it('like transaction and check notification', () => {
+        it('Then check that is possible like a transaction and a notification is sent', () => {
             let likeBefore, likeAfter, countBefore, countAfter //FIXME: count of what?
 
             cy.intercept({ method: 'GET', url: '/notifications', }).as('getNotifications')
@@ -58,7 +58,7 @@ describe('Transaction Detail', () => {
 
         })
 
-        it('Comment transaction and check notification', () => {
+        it('Then check that is possible comment a transaction and a notification is sent', () => {
 
             let countBefore, countAfter
             cy.intercept({ method: 'GET', url: '/notifications', }).as('getNotifications')
@@ -91,7 +91,7 @@ describe('Transaction Detail', () => {
                 })
         })
 
-        it('Comment transaction and check comment section', () => {
+        it('Then check that is not possible send a empty transaction comment', () => {
 
             cy.signIn(DEFAULT_USERNAME, DEFAULT_PASSWORD)
             cy.doPaymentOnly(paymentValue, randomString, DEFAULT_FULLNAME)
@@ -109,10 +109,10 @@ describe('Transaction Detail', () => {
         })
     })
 
-    describe('Transaction Detail interface of request', () => {
+    describe('When Transaction Detail interface of request is accessed', () => {
 
 
-        it('Accept transaction request and check value update', () => {
+        it('Then check that is possible accept a transaction request and the total money is updated immediately', () => {
             let balanceBefore, balanceAfter
 
             cy.intercept({ method: 'GET', url: '/transactions/**', }).as('getTransations')
@@ -143,7 +143,7 @@ describe('Transaction Detail', () => {
 
         })
 
-        it('Deny transaction request and check the value does not update', () => {
+        it('Then check that is possible deny a transaction request and the total money is not updated', () => {
             let balanceBefore, balanceAfter
 
             cy.intercept({ method: 'GET', url: '/transactions/**', }).as('getTransations')

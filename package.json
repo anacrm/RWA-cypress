@@ -8,7 +8,12 @@
     "cypress": "./node_modules/.bin/cypress open",
     "e2e": "cypress open --e2e --browser chrome",
     "triggerAllTests-chrome": "npx cypress run --browser chrome",
-    "triggerAllTests-headless": "npx cypress run"
+    "triggerAllTests-headless": "npx cypress run",
+    "cleanup": "rm -fr cypress/reports",
+    "merge_reports": "npx mochawesome-merge cypress/reports/mochawesome-report/*.json > cypress/reports/output.json",
+    "mochawesome_report": "marge --reportDir cypress/reports/mochawesome-html-report -t Cypress_Test_Report -p Cypress_HMTL_Report -f Cypress_HMTL_Report --charts true cypress/reports/output.json",
+    "cy_dashboard": "npx cypress run --record --key 9ecab00c-f0a1-4a9d-b818-ad1626e01b25 || exit 0",
+    "cy:report": "npm run cleanup && npm run cy_dashboard && npm run merge_reports && npm run mochawesome_report"
   },
   "repository": {
     "type": "git",

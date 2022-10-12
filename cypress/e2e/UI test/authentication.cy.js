@@ -1,18 +1,18 @@
 /// <reference types="cypress" />
 const utils = require('../../support/utils')
 
-describe('Authentication', () => {
+describe('Given the Authentication ?', () => {
 
   const DEFAULT_PASSWORD = Cypress.env('DEFAULT_PASSWORD');
   const DEFAULT_USERNAME = Cypress.env('DEFAULT_USERNAME');
 
-  describe('Login', () => {
+  describe('When Login is done', () => {
 
     beforeEach(() => {
       cy.visit('/signin')
     })
 
-    it('Successful login', () => {
+    it('Then successful login happens with valid cradenitials', () => {
 
       cy.signIn(DEFAULT_USERNAME, DEFAULT_PASSWORD);
 
@@ -20,7 +20,7 @@ describe('Authentication', () => {
       cy.get('.MuiTypography-root').contains('@').should('contain', DEFAULT_USERNAME)
     })
 
-    it('Does not login user with wrong password', () => {
+    it('Then login does not happen with wrong password', () => {
 
       cy.signIn(DEFAULT_USERNAME, '1234');
 
@@ -29,7 +29,7 @@ describe('Authentication', () => {
     })
   })
 
-  describe('Sign up', () => {
+  describe('When the Sign up is done', () => {
     let firstName = utils.randomString();
     let lastName = utils.randomString();
     let password = utils.randomString();
@@ -39,7 +39,7 @@ describe('Authentication', () => {
       cy.visit('/signup')
     })
 
-    it('Successful sign up', () => {
+    it('Then check successful sign up happens with valid cradenitials', () => {
       cy.get('#firstName').type(firstName)
       cy.get('#lastName').type(lastName)
       cy.get('#username').type(userName)
@@ -49,7 +49,7 @@ describe('Authentication', () => {
       cy.url().should('contain', '/signin')
     })
 
-    it('Cannot continue without all required fields', () => {
+    it('Then check that is not possible continue without all required fields', () => {
 
       cy.get('#lastName').type(lastName)
       cy.get('#username').type(userName)
@@ -76,7 +76,7 @@ describe('Authentication', () => {
       cy.get('.MuiButton-label').contains('Sign Up').should('not.be.enabled')
     })
 
-    it('Password minimum length', () => {
+    it('Then check the password minimum length', () => {
 
       cy.get('#firstName').type(firstName)
       cy.get('#lastName').type(lastName)
@@ -93,7 +93,7 @@ describe('Authentication', () => {
 
     })
 
-    it('Match confirm password ', () => {
+    it('Then check if confirm password matches ', () => {
       cy.get('#firstName').type(firstName)
       cy.get('#lastName').type(lastName)
       cy.get('#username').type(userName)
@@ -105,9 +105,9 @@ describe('Authentication', () => {
     })
   })
 
-  describe('Logout', () => {
+  describe('When the Logout is done', () => {
 
-    it('Successful logout', () => {
+    it('Then successfully logout happens', () => {
       cy.signIn(DEFAULT_USERNAME, DEFAULT_PASSWORD)
       cy.get('.MuiTypography-root').contains('Logout').click()
       cy.url().should('contain', '/signin')

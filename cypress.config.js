@@ -4,7 +4,7 @@ const dotenv = require('dotenv')
 dotenv.config()
 
 module.exports = defineConfig({
-  projectId: 'mg9i4y',
+  projectId: 'woudxx',
   viewportWidth: 1920,
   viewportHeight: 1080,
   env: {
@@ -23,9 +23,14 @@ module.exports = defineConfig({
     setupNodeEvents(on, config) {
       // implement node event listeners here
     },
-    reporter: "cypress-multi-reporters",
+    reporter: "mochawesome",
     reporterOptions: {
-      configFile: "reporter-config.json"
-    }
+      "reportDir": "cypress/reports/mochawesome-report",
+      "overwrite": false,
+      "html": false,
+      "json": true,
+      "timestamp": "mmddyyyy_HHMMss"
+    },
+
   },
 });

@@ -1,12 +1,12 @@
 /// <reference types="cypress" />
 const utils = require('../../support/utils')
 
-describe('User settings', () => {
+describe('Given User settings?', () => {
 
     const EDIT_PASSWORD = Cypress.env('EDIT_PASSWORD');
     const EDIT_USERNAME = Cypress.env('EDIT_USERNAME');
 
-    describe('Update user settings', () => {
+    describe('When Update user settings is accessed', () => {
 
         let firstName = utils.randomString();
         let lastName = utils.randomString();
@@ -18,7 +18,7 @@ describe('User settings', () => {
             cy.signIn(EDIT_USERNAME, EDIT_PASSWORD);
         })
 
-        it('Successful update', () => {
+        it('Then check that a successful user settings update is possible', () => {
 
             cy.get('.MuiTypography-root').contains('My Account').click()
             cy.get('#user-settings-firstName-input').clear().type(firstName)
@@ -28,7 +28,7 @@ describe('User settings', () => {
             cy.get('.MuiButton-label').contains('Save').click()
             cy.get('h6[data-test*="sidenav-user-full-name"]').should('contain.text', firstName)
         })
-        it('Can not save without required fields', () => {
+        it('Then check that is not possible save user settings without all the required fields are filled', () => {
 
             cy.get('.MuiTypography-root').contains('My Account').click()
             cy.get('#user-settings-firstName-input').clear()
@@ -53,7 +53,7 @@ describe('User settings', () => {
 
         })
 
-        it('Invalid email format', () => {
+        it('Then check the requirement of a valid email format', () => {
 
             cy.get('.MuiTypography-root').contains('My Account').click()
             cy.get('#user-settings-firstName-input').clear().type(firstName)
@@ -63,7 +63,7 @@ describe('User settings', () => {
             cy.get('#user-settings-email-input-helper-text').should('contain.text', 'Must contain a valid email address')
         })
 
-        it('Invalid Phone number format', () => {
+        it('Then check the requirement of a valid Phone number format', () => {
 
             cy.get('.MuiTypography-root').contains('My Account').click()
             cy.get('#user-settings-firstName-input').clear().type(firstName)

@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 const utils = require('../../support/utils')
 
-describe('New interface', () => {
+describe('Given New interface', () => {
 
     const DEFAULT_PASSWORD = Cypress.env('DEFAULT_PASSWORD');
     const DEFAULT_USERNAME = Cypress.env('DEFAULT_USERNAME');
@@ -11,13 +11,10 @@ describe('New interface', () => {
     let paymentValue = utils.paymentValue()
     let randomString = utils.randomString();
 
-    describe('Send payment', () => {
+    describe('When a payment is sent', () => {
 
-        beforeEach(() => {
-            cy.viewport(1920, 1080)
-        })
 
-        it('Successful payment and create another', () => {
+        it('Then a successful payment is done and create another transaction button is clickable', () => {
             let balanceBefore, balanceAfter
             cy.intercept({ method: 'GET', url: '/checkAuth', }).as('checkAuth')
 
@@ -53,7 +50,7 @@ describe('New interface', () => {
             })
         })
 
-        it('Successful payment and Return To Transactions', () => {
+        it('Then a successful payment is done and Return To Transactions button is clickable', () => {
 
             let balanceBefore, balanceAfter
             cy.intercept({ method: 'GET', url: '/checkAuth', }).as('checkAuth')
@@ -86,7 +83,7 @@ describe('New interface', () => {
 
         })
 
-        it('Do a payment and verify notification', () => {
+        it('Then a notification is sent after a payment happens', () => {
             let countBefore, countAfter
 
             cy.intercept({ method: 'GET', url: '/notifications', }).as('notifications') // FIXME: getNotifications
@@ -122,13 +119,10 @@ describe('New interface', () => {
 
     })
 
-    describe('Request payment', () => {
+    describe('When a Request payment is sent', () => {
 
-        beforeEach(() => {
-            cy.viewport(1920, 1080) //FIXME
-        })
 
-        it('Successful request and create anoter', () => {
+        it('Then a successful request is done and create another request button is clickable', () => {
 
 
             let balanceBefore, balanceAfter
@@ -169,7 +163,7 @@ describe('New interface', () => {
             })
         })
 
-        it('Successful request and Return To Transactions', () => {
+        it('Then a successful request is done and Return To Transactions button is clickable', () => {
 
             let balanceBefore, balanceAfter
             cy.intercept({ method: 'GET', url: '/checkAuth', }).as('checkAuth')
@@ -199,7 +193,7 @@ describe('New interface', () => {
 
         })
 
-        it('Do a request and verify notification', () => {
+        it('Then a notification is sent after a request happens', () => {
             let countBefore, countAfter
 
             cy.intercept({ method: 'GET', url: '/notifications', }).as('notifications') //FIXME getNotifications
