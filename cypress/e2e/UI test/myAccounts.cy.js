@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 const utils = require('../../support/utils')
 
-describe('Given User settings?', () => {
+describe('Given User try to use settings function', () => {
 
     const EDIT_PASSWORD = Cypress.env('EDIT_PASSWORD');
     const EDIT_USERNAME = Cypress.env('EDIT_USERNAME');

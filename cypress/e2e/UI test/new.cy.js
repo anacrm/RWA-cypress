@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 const utils = require('../../support/utils')
 
-describe('Given New interface', () => {
+describe('Given user try to use New interface', () => {
 
     const DEFAULT_PASSWORD = Cypress.env('DEFAULT_PASSWORD');
     const DEFAULT_USERNAME = Cypress.env('DEFAULT_USERNAME');

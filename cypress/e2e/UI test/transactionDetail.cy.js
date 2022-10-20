@@ -1,7 +1,7 @@
 /// <reference types="cypress"/>
 const utils = require('../../support/utils')
 
-describe('Given Transaction Detail', () => {
+describe('Given the user try to user Transaction Detail interface', () => {
     const DEFAULT_PASSWORD = Cypress.env('DEFAULT_PASSWORD');
     const DEFAULT_USERNAME = Cypress.env('DEFAULT_USERNAME');
     const DEFAULT_FULLNAME = Cypress.env('DEFAULT_FULLNAME')
