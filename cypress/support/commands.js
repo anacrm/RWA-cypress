@@ -68,16 +68,17 @@ Cypress.Commands.add('doRequestOnly', (paymentAmount, paymentCommment, searchNam
 })
 
 
-Cypress.Commands.add('doRequest', (userName, password, paymentAmount, paymentCommment) => {
+Cypress.Commands.add('doRequest', (userName, password, paymentAmount, paymentCommment, searchName) => {
 
 
     cy.signIn(userName, password)
     cy.get('a[href*="/transaction/new"]').click()
+    cy.get('#user-list-search-input').type(searchName)
     cy.get('li[data-test*="user-list-item"]').first().click()
+    cy.wait(1000)
     cy.get('#amount').type(paymentAmount)
     cy.get('#transaction-create-description-input').type(paymentCommment)
     cy.get('.MuiButton-label').contains('Request').click()
-
 })
 
 

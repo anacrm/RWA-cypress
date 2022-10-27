@@ -1,227 +1,122 @@
 /// <reference types="cypress" />
 const utils = require('../../support/utils')
 
-describe('Given user try to use New interface', () => {
-
-    const DEFAULT_PASSWORD = Cypress.env('DEFAULT_PASSWORD');
-    const DEFAULT_USERNAME = Cypress.env('DEFAULT_USERNAME');
-    const ACCESSORY_USERNAME = Cypress.env('ACCESSORY_USERNAME')
-    const ACCESSORY_PASSWORD = Cypress.env('ACCESSORY_PASSWORD')
-    const DEFAULT_FULLNAME = Cypress.env('DEFAULT_FULLNAME')
-    let paymentValue = utils.paymentValue()
-    let randomString = utils.randomString();
-
-    describe('When a payment is sent', () => {
-
-
-        it('Then a successful payment is done and create another transaction button is clickable', () => {
-            let balanceBefore, balanceAfter
+describe('New interface', () => {
+    context('Given the user has valid credentials and login it account', () => {
+        const DEFAULT_PASSWORD = Cypress.env('DEFAULT_PASSWORD');
+        const DEFAULT_USERNAME = Cypress.env('DEFAULT_USERNAME');
+        const DEFAULT_FULLNAME = Cypress.env('DEFAULT_FULLNAME')
+        const ACCESSORY_USERNAME = Cypress.env('ACCESSORY_USERNAME')
+        const ACCESSORY_PASSWORD = Cypress.env('ACCESSORY_PASSWORD')
+        const RECIPIENT_FULLNAME = Cypress.env('ACCESSORY_FULLNAME')
+        let paymentValue = utils.paymentValue()
+        let randomString = utils.randomString();
+        beforeEach(() => {
+            cy.intercept({ method: 'GET', url: '/notifications', }).as('notifications')
             cy.intercept({ method: 'GET', url: '/checkAuth', }).as('checkAuth')
-
             cy.signIn(DEFAULT_USERNAME, DEFAULT_PASSWORD)
-            cy.get('[data-test="sidenav-user-balance"]').invoke('text').as('balanceBeforePay') //FIXME: don't need the alias
+            cy.wait('@notifications')
+            cy.get('.MuiBadge-badge.makeStyles-customBadge-28').invoke('text').as('notificationBeforeAsText')
+            cy.get('[data-test="sidenav-user-balance"]').invoke('text').as('balanceBeforePayAsText')
+        })
+        context('When the user does a payment', () => {
 
-            cy.get('@balanceBeforePay')
-                .then((balanceBeforePay) => {
+            beforeEach(() => {
+                cy.doPaymentOnly(paymentValue, randomString, RECIPIENT_FULLNAME)
+                cy.wait('@checkAuth')
+                cy.get('[data-test="sidenav-user-balance"]').invoke('text').as('balanceAfterPayAsText')
+            })
 
-                    balanceBefore = utils.toNumber(balanceBeforePay)
-                    cy.doPaymentOnly(paymentValue, randomString, DEFAULT_FULLNAME)
-                    cy.wait('@checkAuth')
-                    cy.get('[data-test="sidenav-user-balance"]').invoke('text').as('balanceAfterPay')
-                    return cy.get('@balanceAfterPay')
+            it('Then the account balance should be updated', () => {
+                let balanceAfterRequest, balanceBeforeRequest
+                cy.get('@balanceBeforePayAsText').then((balanceBeforePayAsText) => {
+                    balanceBeforeRequest = utils.toNumber(balanceBeforePayAsText)
+                    cy.get('@balanceAfterPayAsText').then((balanceAfterPay) => {
+                        balanceAfterRequest = utils.toNumber(balanceAfterPay)
+                        cy.wrap(balanceAfterRequest).should('deep.equal', (balanceBeforeRequest - paymentValue))
+
+                    })
                 })
-                .then((balanceAfterPay) => {
-                    balanceAfter = utils.toNumber(balanceAfterPay)
-                })
-                .then(() => {
-                    cy.wrap(balanceAfter).should('deep.equal', (balanceBefore - parseFloat(paymentValue)))
-                })
-
-
-            cy.get('[data-test="alert-bar-success"]').should('be.visible')
-            cy.get('.MuiButton-label').contains('Create Another Transaction').click()
-            cy.get('.MuiSvgIcon-root.MuiStepIcon-root').each(($el, index) => {
-
-                if (index === 0) {
-                    cy.wrap($el).should('have.class', 'MuiStepIcon-active')
-                } else {
-                    cy.wrap($el).should('not.have.class', 'MuiStepIcon-active')
-                }
+            })
+            it('Then the create another transaction button should be clickable ', () => {
+                cy.get('.MuiButton-label').contains('Create Another Transaction').should('be.visible')
+            })
+            it('Then the return to transactions button should be clickable ', () => {
+                cy.get('.MuiButton-label').contains('Return To Transactions').should('be.visible')
             })
         })
+        context('When the user receives a payment', () => {
+            beforeEach(() => {
+                cy.get('.MuiTypography-root').contains('Logout').click()
+                cy.doPayment(ACCESSORY_USERNAME, ACCESSORY_PASSWORD, paymentValue, randomString, DEFAULT_FULLNAME)
+                cy.wait('@notifications')
+                cy.get('.MuiTypography-root').contains('Logout').click()
+                cy.signIn(DEFAULT_USERNAME, DEFAULT_PASSWORD)
+            })
 
-        it('Then a successful payment is done and Return To Transactions button is clickable', () => {
-
-            let balanceBefore, balanceAfter
-            cy.intercept({ method: 'GET', url: '/checkAuth', }).as('checkAuth')
-
-            cy.signIn(DEFAULT_USERNAME, DEFAULT_PASSWORD)
-            cy.get('[data-test="sidenav-user-balance"]').invoke('text').as('balanceBeforePay') //FIXME: don't need alias
-
-            cy.get('@balanceBeforePay')
-                .then((balanceBeforePay) => {
-
-                    balanceBefore = utils.toNumber(balanceBeforePay)
-                    cy.doPaymentOnly(paymentValue, randomString, DEFAULT_FULLNAME)
-                    cy.wait('@checkAuth')
-                    cy.get('[data-test="sidenav-user-balance"]').invoke('text').as('balanceAfterPay') //FIXME: don't need alias. i think the retur can be the cy.get.invoke part already
-                    return cy.get('@balanceAfterPay')
-                })
-                .then((balanceAfterPay) => {
-
-                    balanceAfter = utils.toNumber(balanceAfterPay)
+            it('Then the user should receive a notification', () => {
+                let notificationBefore, notificationAfter
+                cy.wait('@notifications')
+                cy.get('.MuiBadge-badge.makeStyles-customBadge-28').invoke('text').as('notificationAfterAsText')
+                cy.get('@notificationBeforeAsText').then((notificationBeforeAsText) => {
+                    cy.get('@notificationAfterAsText').then((notificationAfterAsText) => {
+                        notificationBefore = parseInt(notificationBeforeAsText)
+                        notificationAfter = parseInt(notificationAfterAsText)
+                        cy.wrap(notificationAfter).should('deep.equal', notificationBefore + 1)
+                    })
 
                 })
-                .then(() => {
 
-                    cy.wrap(balanceAfter).should('deep.equal', (balanceBefore - parseFloat(paymentValue)))
-                })
-
-            cy.get('[data-test="alert-bar-success"]').should('be.visible')
-            cy.get('.MuiButton-label').contains('Return To Transactions').click()
-            cy.url().should('deep.equal', `${Cypress.config().baseUrl}/`)
-
-        })
-
-        it('Then a notification is sent after a payment happens', () => {
-            let countBefore, countAfter
-
-            cy.intercept({ method: 'GET', url: '/notifications', }).as('notifications') // FIXME: getNotifications
-            cy.signIn(ACCESSORY_USERNAME, ACCESSORY_PASSWORD)
-            cy.wait('@notifications')
-            cy.get('.MuiBadge-badge.makeStyles-customBadge-28').invoke('text').as('notificationCount') //FIXME: don't need the alias
-            cy.get('@notificationCount')
-                .then((notificationCount) => {
-                    countBefore = parseInt(notificationCount)
-
-                    cy.log(countBefore)
-                    cy.get('.MuiTypography-root').contains('Logout').click()
-                    cy.signIn(DEFAULT_USERNAME, DEFAULT_PASSWORD)
-                    cy.doPaymentOnly(paymentValue, randomString, DEFAULT_FULLNAME)
-                    cy.wait('@notifications')
-                    cy.get('.MuiTypography-root').contains('Logout').click()
-                    cy.signIn(ACCESSORY_USERNAME, ACCESSORY_PASSWORD)
-                    cy.wait('@notifications')
-                    cy.get('.MuiBadge-badge.makeStyles-customBadge-28').invoke('text').as('notificationCountAfter')
-
-                    return cy.get('@notificationCountAfter')
-                })
-                .then((notificationAfter) => {
-                    countAfter = parseInt(notificationAfter)
-                    cy.wrap(countAfter).should('deep.equal', (countBefore + 1))
-                })
-
-
-
-
-
-        })
-
-    })
-
-    describe('When a Request payment is sent', () => {
-
-
-        it('Then a successful request is done and create another request button is clickable', () => {
-
-
-            let balanceBefore, balanceAfter
-            cy.intercept({ method: 'GET', url: '/checkAuth', }).as('checkAuth')
-
-            cy.signIn(DEFAULT_USERNAME, DEFAULT_PASSWORD)
-            cy.get('[data-test="sidenav-user-balance"]').invoke('text').as('balanceBeforePay')
-
-            cy.get('@balanceBeforePay')
-                .then((balanceBeforePay) => {
-
-                    balanceBefore = utils.toNumber(balanceBeforePay)
-                    cy.log(balanceBefore)
-                    cy.doRequestOnly(paymentValue, randomString, DEFAULT_FULLNAME)
-                    cy.wait('@checkAuth')
-                    cy.get('[data-test="sidenav-user-balance"]').invoke('text').as('balanceAfterPay') //can return the cy.get.invoke already, without the alias
-                    return cy.get('@balanceAfterPay')
-                })
-                .then((balanceAfterPay) => {
-
-                    balanceAfter = utils.toNumber(balanceAfterPay)
-                    cy.log(balanceAfter)
-
-                })
-                .then(() => {
-                    cy.wrap(balanceAfter).should('deep.equal', balanceBefore)
-                })
-
-            cy.get('[data-test="alert-bar-success"]').should('be.visible')
-            cy.get('.MuiButton-label').contains('Create Another Transaction').click()
-            cy.get('.MuiSvgIcon-root.MuiStepIcon-root').each(($el, index) => {
-
-                if (index === 0) {
-                    cy.wrap($el).should('have.class', 'MuiStepIcon-active')
-                } else {
-                    cy.wrap($el).should('not.have.class', 'MuiStepIcon-active')
-                }
             })
         })
+        context('When the user request a payment', () => {
 
-        it('Then a successful request is done and Return To Transactions button is clickable', () => {
+            beforeEach(() => {
+                cy.doRequestOnly(paymentValue, randomString, RECIPIENT_FULLNAME)
+                cy.wait('@checkAuth')
+                cy.get('[data-test="sidenav-user-balance"]').invoke('text').as('balanceAfterPayAsText')
+            })
 
-            let balanceBefore, balanceAfter
-            cy.intercept({ method: 'GET', url: '/checkAuth', }).as('checkAuth')
+            it('Then the account balance should not be updated', () => {
+                let balanceAfterRequest, balanceBeforeRequest
+                cy.get('@balanceBeforePayAsText').then((balanceBeforePayAsText) => {
+                    balanceBeforeRequest = utils.toNumber(balanceBeforePayAsText)
+                    cy.get('@balanceAfterPayAsText').then((balanceAfterPay) => {
+                        balanceAfterRequest = utils.toNumber(balanceAfterPay)
+                        cy.wrap(balanceAfterRequest).should('deep.equal', (balanceBeforeRequest))
 
-            cy.signIn(DEFAULT_USERNAME, DEFAULT_PASSWORD)
-            cy.get('[data-test="sidenav-user-balance"]').invoke('text').as('balanceBeforePay')
-
-            cy.get('@balanceBeforePay')
-                .then((balanceBeforePay) => {
-
-                    balanceBefore = utils.toNumber(balanceBeforePay)
-                    cy.doRequestOnly(paymentValue, randomString, DEFAULT_FULLNAME)
-                    cy.wait('@checkAuth')
-                    cy.get('[data-test="sidenav-user-balance"]').invoke('text').as('balanceAfterPay')
-                    return cy.get('@balanceAfterPay')
+                    })
                 })
-                .then((balanceAfterPay) => {
-                    balanceAfter = utils.toNumber(balanceAfterPay)
-                })
-                .then(() => {
-                    cy.wrap(balanceAfter).should('deep.equal', balanceBefore)
-                })
-
-            cy.get('[data-test="alert-bar-success"]').should('be.visible')
-            cy.get('.MuiButton-label').contains('Return To Transactions').click()
-            cy.url().should('deep.equal', `${Cypress.config().baseUrl}/`)
-
+            })
+            it('Then the create another transaction button should be clickable ', () => {
+                cy.get('.MuiButton-label').contains('Create Another Transaction').should('be.visible')
+            })
+            it('Then the return to transactions button should be clickable ', () => {
+                cy.get('.MuiButton-label').contains('Return To Transactions').should('be.visible')
+            })
         })
+        context('When the user receives request of a payment', () => {
+            beforeEach(() => {
+                cy.get('.MuiTypography-root').contains('Logout').click()
+                cy.doRequest(ACCESSORY_USERNAME, ACCESSORY_PASSWORD, paymentValue, randomString, DEFAULT_FULLNAME)
+                cy.wait('@notifications')
+                cy.get('.MuiTypography-root').contains('Logout').click()
+                cy.signIn(DEFAULT_USERNAME, DEFAULT_PASSWORD)
+            })
 
-        it('Then a notification is sent after a request happens', () => {
-            let countBefore, countAfter
+            it('Then the user should receive a notification', () => {
+                let notificationBefore, notificationAfter
+                cy.wait('@notifications')
+                cy.get('.MuiBadge-badge.makeStyles-customBadge-28').invoke('text').as('notificationAfterAsText')
+                cy.get('@notificationBeforeAsText').then((notificationBeforeAsText) => {
+                    cy.get('@notificationAfterAsText').then((notificationAfterAsText) => {
+                        notificationBefore = parseInt(notificationBeforeAsText)
+                        notificationAfter = parseInt(notificationAfterAsText)
+                        cy.wrap(notificationAfter).should('deep.equal', notificationBefore + 1)
+                    })
 
-            cy.intercept({ method: 'GET', url: '/notifications', }).as('notifications') //FIXME getNotifications
-            cy.signIn(ACCESSORY_USERNAME, ACCESSORY_PASSWORD)
-            cy.wait('@notifications')
-            cy.get('.MuiBadge-badge.makeStyles-customBadge-28').invoke('text').as('notificationCount') //FIXME
-            cy.get('@notificationCount')
-                .then((notificationCount) => {
-                    countBefore = parseInt(notificationCount)
-
-                    cy.log(countBefore)
-                    cy.get('.MuiTypography-root').contains('Logout').click()
-                    cy.signIn(DEFAULT_USERNAME, DEFAULT_PASSWORD)
-                    cy.doRequestOnly(paymentValue, randomString, DEFAULT_FULLNAME)
-                    cy.wait('@notifications')
-                    cy.get('.MuiTypography-root').contains('Logout').click()
-                    cy.signIn(ACCESSORY_USERNAME, ACCESSORY_PASSWORD)
-                    cy.wait('@notifications')
-                    cy.get('.MuiBadge-badge.makeStyles-customBadge-28').invoke('text').as('notificationCountAfter') //FIXME
-
-                    return cy.get('@notificationCountAfter')
                 })
-                .then((notificationAfter) => {
-                    countAfter = parseInt(notificationAfter)
-                    cy.wrap(countAfter).should('deep.equal', (countBefore + 1))
-                })
+            })
         })
     })
-
-
 })
