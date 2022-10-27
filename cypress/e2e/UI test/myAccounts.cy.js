@@ -12,9 +12,7 @@ describe('Given User try to use settings function', () => {
         let lastName = utils.randomString();
         let randomString = utils.randomString();
         let randomNumber = utils.randomNumber()
-
         beforeEach(() => {
-            cy.visit('/signin')
             cy.signIn(EDIT_USERNAME, EDIT_PASSWORD);
         })
 
